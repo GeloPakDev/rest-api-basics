@@ -1,11 +1,12 @@
 package com.epam.esm;
 
+import com.epam.esm.exceptions.EmptyResourceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static com.epam.esm.util.EndpointName.*;
@@ -23,17 +24,26 @@ public class TagController {
         this.tagService = tagService;
     }
 
-    @GetMapping(ID)
-    public ResponseEntity<Tag> findTagById(@PathVariable(TAG_ID) int id) {
+    @RequestMapping(params = TAG_ID)
+    public Tag findTagById(@RequestParam int id) {
         Optional<Tag> optTag = tagService.find(id);
-        return optTag.map(
-                        tag -> new ResponseEntity<>(tag, HttpStatus.OK)).
-                orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+        Tag tag = new Tag();
+        if (optTag.isPresent()) {
+            tag = optTag.get();
+        } else {
+            throw new NoSuchElementException();
+        }
+        return tag;
     }
 
     @GetMapping
     public List<Tag> findAllTags() {
-        return tagService.findAll();
+        List<Tag> list = tagService.findAll();
+        if (!list.isEmpty()) {
+            return list;
+        } else {
+            throw new EmptyResourceException();
+        }
     }
 
     @PostMapping(consumes = JSON)

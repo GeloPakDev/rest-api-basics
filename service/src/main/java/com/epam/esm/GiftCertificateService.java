@@ -29,7 +29,7 @@ public interface GiftCertificateService {
 
     void delete(Integer id);
 
-    boolean update(GiftCertificate giftCertificate);
+    boolean update(int id, GiftCertificate giftCertificate);
 
     boolean updateGiftTag(int id);
 }

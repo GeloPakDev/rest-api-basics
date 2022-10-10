@@ -1,12 +1,12 @@
 package com.epam.esm;
 
+import com.epam.esm.exceptions.EmptyResourceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static com.epam.esm.util.EndpointName.*;
@@ -27,56 +27,105 @@ public class GiftCertificateController {
 
     //GET mappings
     @RequestMapping(value = GIFT_CERTIFICATES, params = GIFT_ID)
-    public ResponseEntity<GiftCertificate> findGiftById(@RequestParam int id) {
-        Optional<GiftCertificate> giftCertificate = giftCertificateService.find(id);
-        return giftCertificate.map(
-                        certificate -> new ResponseEntity<>(certificate, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+    public GiftCertificate findGiftById(@RequestParam int id) {
+        Optional<GiftCertificate> giftCertificateOptional = giftCertificateService.find(id);
+        GiftCertificate giftCertificate = new GiftCertificate();
+        if (giftCertificateOptional.isPresent()) {
+            giftCertificate = giftCertificateOptional.get();
+        } else {
+            throw new NoSuchElementException();
+        }
+        return giftCertificate;
     }
 
     @RequestMapping(GIFT_CERTIFICATES)
     public List<GiftCertificate> allGiftCertificates() {
-        return giftCertificateService.findAll();
+        List<GiftCertificate> list = giftCertificateService.findAll();
+        if (!list.isEmpty()) {
+            return list;
+        } else {
+            throw new EmptyResourceException();
+        }
     }
 
     @RequestMapping(value = GIFT_CERTIFICATES, params = TAG_NAME)
     public List<GiftCertificate> findCertificatesByTagName(@RequestParam String tagName) {
-        return giftCertificateService.findCertificatesByTagName(tagName);
+        List<GiftCertificate> list = giftCertificateService.findCertificatesByTagName(tagName);
+        if (!list.isEmpty()) {
+            return list;
+        } else {
+            throw new EmptyResourceException();
+        }
     }
 
     @RequestMapping(value = GIFT_CERTIFICATES, params = PART_NAME)
     public List<GiftCertificate> findCertificatesByPartName(@RequestParam String partName) {
-        return giftCertificateService.findCertificatesByPartName(partName);
+        List<GiftCertificate> list = giftCertificateService.findCertificatesByPartName(partName);
+        if (!list.isEmpty()) {
+            return list;
+        } else {
+            throw new EmptyResourceException();
+        }
     }
 
     @RequestMapping(value = GIFT_CERTIFICATES, params = PART_DESCRIPTION)
     public List<GiftCertificate> findCertificatesByPartDescription(@RequestParam String partDescription) {
-        return giftCertificateService.findCertificatesByPartDescription(partDescription);
+        List<GiftCertificate> list = giftCertificateService.findCertificatesByPartDescription(partDescription);
+        if (!list.isEmpty()) {
+            return list;
+        } else {
+            throw new EmptyResourceException();
+        }
     }
 
     @RequestMapping(value = GIFT_CERTIFICATES, params = SORT_BY_DATE_ASC)
     public List<GiftCertificate> sortCertificatesByDateASC() {
-        return giftCertificateService.sortGiftByDateASC();
+        List<GiftCertificate> list = giftCertificateService.sortGiftByDateASC();
+        if (!list.isEmpty()) {
+            return list;
+        } else {
+            throw new EmptyResourceException();
+        }
     }
 
     @RequestMapping(value = GIFT_CERTIFICATES, params = SORT_BY_DATE_DESC)
     public List<GiftCertificate> sortCertificatesByDateDESC() {
-        return giftCertificateService.sortGiftByDateDESC();
+        List<GiftCertificate> list = giftCertificateService.sortGiftByDateDESC();
+        if (!list.isEmpty()) {
+            return list;
+        } else {
+            throw new EmptyResourceException();
+        }
     }
 
     @RequestMapping(value = GIFT_CERTIFICATES, params = SORT_BY_NAME_ASC)
     public List<GiftCertificate> sortCertificatesByNameASC() {
-        return giftCertificateService.sortGiftByNameASC();
+        List<GiftCertificate> list = giftCertificateService.sortGiftByNameASC();
+        if (!list.isEmpty()) {
+            return list;
+        } else {
+            throw new EmptyResourceException();
+        }
     }
 
     @RequestMapping(value = GIFT_CERTIFICATES, params = SORT_BY_NAME_DESC)
     public List<GiftCertificate> sortCertificatesByNameDESC() {
-        return giftCertificateService.sortGiftByNameDESC();
+        List<GiftCertificate> list = giftCertificateService.sortGiftByNameDESC();
+        if (!list.isEmpty()) {
+            return list;
+        } else {
+            throw new EmptyResourceException();
+        }
     }
 
     @RequestMapping(value = GIFT_CERTIFICATES, params = SORT_BY_DATE_AND_NAME_DESC)
     public List<GiftCertificate> sortGiftByDateAndNameDESC() {
-        return giftCertificateService.sortGiftByDateAndNameDESC();
+        List<GiftCertificate> list = giftCertificateService.sortGiftByDateAndNameDESC();
+        if (!list.isEmpty()) {
+            return list;
+        } else {
+            throw new EmptyResourceException();
+        }
     }
 
     //POST Mappings
@@ -89,28 +138,7 @@ public class GiftCertificateController {
     //UPDATE Mappings
     @PatchMapping(path = GIFT_CERTIFICATES + ID, consumes = JSON)
     public boolean updateGiftCertificate(@PathVariable(GIFT_ID) int id, @RequestBody GiftCertificate giftCertificate) {
-        Optional<GiftCertificate> certificate = giftCertificateService.find(id);
-
-        GiftCertificate gift = certificate.get();
-
-        if (giftCertificate.getName() != null) {
-            gift.setName(giftCertificate.getName());
-        }
-
-        if (giftCertificate.getDescription() != null) {
-            gift.setDescription(giftCertificate.getDescription());
-        }
-
-        if (giftCertificate.getPrice() != null) {
-            gift.setPrice(giftCertificate.getPrice());
-        }
-
-        if (giftCertificate.getDuration() != 0) {
-            gift.setDescription(giftCertificate.getDescription());
-        }
-
-        gift.setLastUpdateDate(LocalDateTime.now());
-        return giftCertificateService.update(gift);
+        return giftCertificateService.update(id, giftCertificate);
     }
 
     //DELETE Mappings

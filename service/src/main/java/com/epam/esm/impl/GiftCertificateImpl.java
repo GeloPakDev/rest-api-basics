@@ -3,10 +3,12 @@ package com.epam.esm.impl;
 import com.epam.esm.GiftCertificate;
 import com.epam.esm.GiftCertificateDao;
 import com.epam.esm.GiftCertificateService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,8 +84,30 @@ public class GiftCertificateImpl implements GiftCertificateService {
     }
 
     @Override
-    public boolean update(GiftCertificate giftCertificate) {
-        return giftCertificateDao.update(giftCertificate);
+    public boolean update(int id, GiftCertificate giftCertificate) {
+
+        Optional<GiftCertificate> certificate = giftCertificateDao.find(id);
+
+        GiftCertificate gift = certificate.get();
+
+        if (giftCertificate.getName() != null && !StringUtils.isNumeric(giftCertificate.getName())) {
+            gift.setName(giftCertificate.getName());
+        }
+
+        if (giftCertificate.getDescription() != null && !StringUtils.isNumeric(giftCertificate.getDescription())) {
+            gift.setDescription(giftCertificate.getDescription());
+        }
+
+        if (giftCertificate.getPrice() != null) {
+            gift.setPrice(giftCertificate.getPrice());
+        }
+
+        if (giftCertificate.getDuration() != 0) {
+            gift.setDuration(giftCertificate.getDuration());
+        }
+
+        gift.setLastUpdateDate(LocalDateTime.now());
+        return giftCertificateDao.update(gift);
     }
 
     @Override

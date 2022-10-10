@@ -21,7 +21,8 @@ public class AppConfig {
     private final String USER = "user";
     private final String DRIVER = "driver";
     private final String PASSWORD = "password";
-    private final int initialSize = 10;
+    private final int initialSize = 3;
+    private final int maxTotalSize = 10;
 
     @Bean
     DataSource dataSource() {
@@ -31,6 +32,7 @@ public class AppConfig {
         basicDataSource.setUsername(environment.getProperty(USER));
         basicDataSource.setPassword(environment.getProperty(PASSWORD));
         basicDataSource.setInitialSize(initialSize);
+        basicDataSource.setMaxTotal(maxTotalSize);
         return basicDataSource;
     }
 }
