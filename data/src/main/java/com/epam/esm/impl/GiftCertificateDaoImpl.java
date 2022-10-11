@@ -35,9 +35,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public Optional<GiftCertificate> find(Integer id) {
         List<GiftCertificate> results = jdbcTemplate.query(SELECT_GIFT_CERTIFICATE_BY_ID, new GiftCertificateMapper(), id);
-        return results.size() == 0 ?
-                Optional.empty() :
-                Optional.of(results.get(0));
+        return results.isEmpty() ?
+                Optional.of(results.get(0)) :
+                Optional.empty();
     }
 
     @Override

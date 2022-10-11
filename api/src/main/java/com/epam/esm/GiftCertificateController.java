@@ -12,7 +12,6 @@ import java.util.Optional;
 import static com.epam.esm.util.EndpointName.*;
 import static com.epam.esm.util.QueryParam.*;
 
-
 @RestController
 @RequestMapping(path = BASE_URL, produces = JSON)
 @CrossOrigin(origins = LOCALHOST)

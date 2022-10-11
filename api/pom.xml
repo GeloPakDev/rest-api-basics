@@ -7,8 +7,8 @@
         <groupId>com.epam.esm</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>api</artifactId>
     <version>1.0.0</version>
 
@@ -30,5 +30,4 @@
             <version>1.0.0</version>
         </dependency>
     </dependencies>
-
 </project>
