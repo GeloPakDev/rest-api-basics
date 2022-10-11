@@ -1,6 +1,5 @@
 package com.epam.esm;
 
-import com.epam.esm.exceptions.EmptyResourceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +25,7 @@ public class TagController {
 
     @RequestMapping(params = TAG_ID)
     public Tag findTagById(@RequestParam int id) {
-        Optional<Tag> optTag = tagService.find(id);
+        Optional<Tag> optTag = tagService.findById(id);
         Tag tag = new Tag();
         if (optTag.isPresent()) {
             tag = optTag.get();
@@ -38,12 +37,7 @@ public class TagController {
 
     @GetMapping
     public List<Tag> findAllTags() {
-        List<Tag> list = tagService.findAll();
-        if (!list.isEmpty()) {
-            return list;
-        } else {
-            throw new EmptyResourceException();
-        }
+        return tagService.findAll();
     }
 
     @PostMapping(consumes = JSON)

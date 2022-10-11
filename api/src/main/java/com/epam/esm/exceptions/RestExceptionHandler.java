@@ -27,16 +27,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(errorResponse);
     }
 
-    @ExceptionHandler(EmptyResourceException.class)
-    public ResponseEntity<Object> handleEmptyResourceException() {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND);
-        String message = "Actual resource is empty";
-        int statusCode = HttpStatus.NOT_FOUND.value();
-        errorResponse.setStatusCode(statusCode);
-        errorResponse.setMessage(message);
-        return buildResponseEntity(errorResponse);
-    }
-
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<Object> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException e) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR);

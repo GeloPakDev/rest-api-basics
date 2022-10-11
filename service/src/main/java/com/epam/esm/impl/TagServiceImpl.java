@@ -20,7 +20,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Optional<Tag> find(Integer id) {
+    public Optional<Tag> findById(Integer id) {
         return tagDao.find(id);
     }
 

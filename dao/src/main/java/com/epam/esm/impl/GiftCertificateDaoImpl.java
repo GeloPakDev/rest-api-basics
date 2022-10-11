@@ -120,7 +120,7 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         if (tag.isPresent()) {
             //If they are identical we pass existing tag from DB
             if (Objects.equals(tag.get().getName(), name)) {
-                int tagId = tag.get().getId();
+                Long tagId = tag.get().getId();
                 return jdbcTemplate.update(CREATE_GIFT_WITH_TAG, giftCertificateId, tagId) != 0;
             }
         }

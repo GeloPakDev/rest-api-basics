@@ -8,7 +8,7 @@ import java.util.Optional;
 @Service
 public interface TagService {
 
-    Optional<Tag> find(Integer id);
+    Optional<Tag> findById(Integer id);
 
     List<Tag> findAll();
 

@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface GiftCertificateService {
 
-    Optional<GiftCertificate> find(Integer id);
+    Optional<GiftCertificate> findById(Integer id);
 
     List<GiftCertificate> findAll();
 

@@ -1,8 +1,6 @@
 package com.epam.esm.impl;
 
-import com.epam.esm.GiftCertificate;
-import com.epam.esm.GiftCertificateDao;
-import com.epam.esm.GiftCertificateService;
+import com.epam.esm.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +20,7 @@ public class GiftCertificateImpl implements GiftCertificateService {
     }
 
     @Override
-    public Optional<GiftCertificate> find(Integer id) {
+    public Optional<GiftCertificate> findById(Integer id) {
         return giftCertificateDao.find(id);
     }
 
