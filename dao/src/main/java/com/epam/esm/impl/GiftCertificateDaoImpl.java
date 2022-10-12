@@ -4,6 +4,7 @@ import com.epam.esm.GiftCertificate;
 import com.epam.esm.GiftCertificateDao;
 import com.epam.esm.Tag;
 import com.epam.esm.TagDao;
+import com.epam.esm.creator.QueryCreator;
 import com.epam.esm.mapper.GiftCertificateMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -33,11 +34,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     //READ operations
     @Override
-    public Optional<GiftCertificate> find(Integer id) {
+    public Optional<GiftCertificate> findById(Integer id) {
         List<GiftCertificate> results = jdbcTemplate.query(SELECT_GIFT_CERTIFICATE_BY_ID, new GiftCertificateMapper(), id);
-        return results.isEmpty() ?
-                Optional.of(results.get(0)) :
-                Optional.empty();
+        return Optional.of(results.get(0));
     }
 
     @Override
@@ -46,43 +45,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> findCertificatesByTagName(String name) {
-        return jdbcTemplate.query(SELECT_GIFT_BY_TAG_NAME, new GiftCertificateMapper(), name);
-    }
-
-    @Override
-    public List<GiftCertificate> findCertificatesByPartName(String name) {
-        return jdbcTemplate.query(SELECT_GIFT_BY_NAME_PART, new GiftCertificateMapper(), name);
-    }
-
-    @Override
-    public List<GiftCertificate> findCertificatesByPartDescription(String description) {
-        return jdbcTemplate.query(SELECT_GIFT_BY_DESCRIPTION_PART, new GiftCertificateMapper(), description);
-    }
-
-    @Override
-    public List<GiftCertificate> sortGiftByNameDESC() {
-        return jdbcTemplate.query(SORT_GIFT_BY_NAME_DESC, new GiftCertificateMapper());
-    }
-
-    @Override
-    public List<GiftCertificate> sortGiftByNameASC() {
-        return jdbcTemplate.query(SORT_GIFT_BY_NAME_ASC, new GiftCertificateMapper());
-    }
-
-    @Override
-    public List<GiftCertificate> sortGiftByDateDESC() {
-        return jdbcTemplate.query(SORT_GIFT_BY_DATE_DESC, new GiftCertificateMapper());
-    }
-
-    @Override
-    public List<GiftCertificate> sortGiftByDateASC() {
-        return jdbcTemplate.query(SORT_GIFT_BY_DATE_ASC, new GiftCertificateMapper());
-    }
-
-    @Override
-    public List<GiftCertificate> sortGiftByDateAndNameDESC() {
-        return jdbcTemplate.query(SORT_GIFT_BY_DATE_AND_NAME_DESC, new GiftCertificateMapper());
+    public List<GiftCertificate> getWithFilters(Map<String, String> fields) {
+        String query = QueryCreator.createGetQuery(fields);
+        return jdbcTemplate.query(query, new GiftCertificateMapper());
     }
 
     //CREATE operations

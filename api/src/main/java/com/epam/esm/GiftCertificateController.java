@@ -2,6 +2,7 @@ package com.epam.esm;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,45 +42,9 @@ public class GiftCertificateController {
         return giftCertificateService.findAll();
     }
 
-    @RequestMapping(value = GIFT_CERTIFICATES, params = TAG_NAME)
-    public List<GiftCertificate> findCertificatesByTagName(@RequestParam String tagName) {
-        return giftCertificateService.findCertificatesByTagName(tagName);
-    }
-
-    @RequestMapping(value = GIFT_CERTIFICATES, params = PART_NAME)
-    public List<GiftCertificate> findCertificatesByPartName(@RequestParam String partName) {
-        return giftCertificateService.findCertificatesByPartName(partName);
-    }
-
-    @RequestMapping(value = GIFT_CERTIFICATES, params = PART_DESCRIPTION)
-    public List<GiftCertificate> findCertificatesByPartDescription(@RequestParam String partDescription) {
-        return giftCertificateService.findCertificatesByPartDescription(partDescription);
-
-    }
-
-    @RequestMapping(value = GIFT_CERTIFICATES, params = SORT_BY_DATE_ASC)
-    public List<GiftCertificate> sortCertificatesByDateASC() {
-        return giftCertificateService.sortGiftByDateASC();
-    }
-
-    @RequestMapping(value = GIFT_CERTIFICATES, params = SORT_BY_DATE_DESC)
-    public List<GiftCertificate> sortCertificatesByDateDESC() {
-        return giftCertificateService.sortGiftByDateDESC();
-    }
-
-    @RequestMapping(value = GIFT_CERTIFICATES, params = SORT_BY_NAME_ASC)
-    public List<GiftCertificate> sortCertificatesByNameASC() {
-        return giftCertificateService.sortGiftByNameASC();
-    }
-
-    @RequestMapping(value = GIFT_CERTIFICATES, params = SORT_BY_NAME_DESC)
-    public List<GiftCertificate> sortCertificatesByNameDESC() {
-        return giftCertificateService.sortGiftByNameDESC();
-    }
-
-    @RequestMapping(value = GIFT_CERTIFICATES, params = SORT_BY_DATE_AND_NAME_DESC)
-    public List<GiftCertificate> sortGiftByDateAndNameDESC() {
-        return giftCertificateService.sortGiftByDateAndNameDESC();
+    @RequestMapping(GIFT_CERTIFICATES + FILTER)
+    public List<GiftCertificate> giftCertificatesByParameter(@RequestParam MultiValueMap<String, String> allRequestParams) {
+        return giftCertificateService.doFilter(allRequestParams);
     }
 
     //POST Mappings

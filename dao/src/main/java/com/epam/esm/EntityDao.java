@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EntityDao<E, K> {
-    Optional<E> find(K id);
+    Optional<E> findById(K id);
 
     List<E> findAll();
 

@@ -23,7 +23,7 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public Optional<Tag> find(Integer id) {
+    public Optional<Tag> findById(Integer id) {
         List<Tag> list = jdbcTemplate.query(SELECT_TAG_BY_ID, new TagMapper(), id);
         return list.size() == 0 ?
                 Optional.empty() :

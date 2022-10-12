@@ -1,5 +1,7 @@
 package com.epam.esm;
 
+import org.springframework.util.MultiValueMap;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -9,22 +11,6 @@ public interface GiftCertificateService {
 
     List<GiftCertificate> findAll();
 
-    List<GiftCertificate> findCertificatesByTagName(String name);
-
-    List<GiftCertificate> findCertificatesByPartName(String name);
-
-    List<GiftCertificate> findCertificatesByPartDescription(String description);
-
-    List<GiftCertificate> sortGiftByNameDESC();
-
-    List<GiftCertificate> sortGiftByNameASC();
-
-    List<GiftCertificate> sortGiftByDateDESC();
-
-    List<GiftCertificate> sortGiftByDateASC();
-
-    List<GiftCertificate> sortGiftByDateAndNameDESC();
-
     boolean create(GiftCertificate giftCertificate);
 
     void delete(Integer id);
@@ -32,4 +18,6 @@ public interface GiftCertificateService {
     boolean update(int id, GiftCertificate giftCertificate);
 
     boolean updateGiftTag(int id);
+
+    List<GiftCertificate> doFilter(MultiValueMap<String, String> requestParams);
 }
