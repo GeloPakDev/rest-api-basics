@@ -2,11 +2,13 @@ package com.epam.esm;
 
 import com.epam.esm.impl.GiftCertificateDaoImpl;
 import org.junit.jupiter.api.*;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -16,8 +18,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class GiftCertificateDaoTest {
+
     private GiftCertificateDao giftCertificateDao;
 
     @BeforeEach
@@ -29,15 +31,22 @@ public class GiftCertificateDaoTest {
         giftCertificateDao = new GiftCertificateDaoImpl(dataSource);
     }
 
+    @AfterEach
+    public void tearDown() throws SQLException {
+        DataSource dataSource = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
+        ScriptUtils.executeSqlScript(dataSource.getConnection(), new ClassPathResource("/drop.sql"));
+    }
+
+
     @Test
     public void getGiftCertificateById() {
         Optional<GiftCertificate> giftCertificateOpt = giftCertificateDao.findById(2);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime createDate = LocalDateTime.parse("2022-10-05 11:15:10", formatter);
+        LocalDateTime createDate = LocalDateTime.parse("2022-10-10 11:15:10", formatter);
         LocalDateTime lastUpdateDate = LocalDateTime.parse("2022-10-05 11:15:10", formatter);
         Long id = 2L;
-        Tag tag = new Tag(id, "tagName2");
-        GiftCertificate giftCertificateToCompare = new GiftCertificate(id, "giftCertificate2", "description2", 2.22, 2, createDate, lastUpdateDate, tag);
+        Tag tag = new Tag(id, "red");
+        GiftCertificate giftCertificateToCompare = new GiftCertificate(id, "bgiftCertificate2", "description2", 2.22, 2, createDate, lastUpdateDate, tag);
         GiftCertificate giftCertificate = new GiftCertificate();
 
         if (giftCertificateOpt.isPresent()) {

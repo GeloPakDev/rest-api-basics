@@ -2,12 +2,16 @@ package com.epam.esm;
 
 import com.epam.esm.impl.GiftCertificateDaoImpl;
 import com.epam.esm.impl.GiftCertificateImpl;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -32,6 +36,12 @@ public class GiftCertificateServiceImplTest {
         giftCertificateService = new GiftCertificateImpl(giftCertificateDao);
     }
 
+    @AfterEach
+    public void tearDown() throws SQLException {
+        DataSource dataSource = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
+        ScriptUtils.executeSqlScript(dataSource.getConnection(), new ClassPathResource("/drop.sql"));
+    }
+
     @Test
     public void create() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -49,7 +59,7 @@ public class GiftCertificateServiceImplTest {
     }
 
     @Test
-    public void delete(){
+    public void delete() {
         giftCertificateDao.delete(3);
         List<GiftCertificate> afterDelete = giftCertificateDao.findAll();
         assertEquals(4, afterDelete.size());

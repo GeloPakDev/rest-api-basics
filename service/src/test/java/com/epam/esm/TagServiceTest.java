@@ -2,12 +2,16 @@ package com.epam.esm;
 
 import com.epam.esm.impl.TagDaoImpl;
 import com.epam.esm.impl.TagServiceImpl;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +30,12 @@ public class TagServiceTest {
                 .build();
         tagDaoImpl = new TagDaoImpl(dataSource);
         tagServiceImpl = new TagServiceImpl(tagDaoImpl);
+    }
+
+    @AfterEach
+    public void tearDown() throws SQLException {
+        DataSource dataSource = new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build();
+        ScriptUtils.executeSqlScript(dataSource.getConnection(), new ClassPathResource("/drop.sql"));
     }
 
     @Test
