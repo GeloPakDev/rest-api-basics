@@ -53,30 +53,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     //CREATE operations
     @Override
     public boolean create(GiftCertificate giftCertificate) {
-        //Create Statement for GiftCertificate
-        PreparedStatementCreatorFactory pscfGift = new PreparedStatementCreatorFactory(
-                CREATE_GIFT_CERTIFICATE,
-                Types.VARCHAR, Types.VARCHAR, Types.DECIMAL, Types.INTEGER, Types.TIMESTAMP, Types.TIMESTAMP
-        );
-        //Call to get generated key of the new GiftCertificate
-        pscfGift.setReturnGeneratedKeys(true);
-
-        PreparedStatementCreator pscGift = pscfGift.newPreparedStatementCreator(
-                Arrays.asList(
-                        giftCertificate.getName(),
-                        giftCertificate.getDescription(),
-                        giftCertificate.getPrice(),
-                        giftCertificate.getDuration(),
-                        giftCertificate.getCreateDate(),
-                        giftCertificate.getLastUpdateDate()));
-
-        GeneratedKeyHolder giftKeyHolder = new GeneratedKeyHolder();
-        //Create new Gift in DB
-        jdbcTemplate.update(pscGift, giftKeyHolder);
         //Get ID of newly created GiftCertificate
-        int giftCertificateId = Objects.requireNonNull(giftKeyHolder.getKey()).intValue();
-
-
+        int giftCertificateId = createGiftCertificate(giftCertificate);
         //Get TAG name to check on uniqueness
         String name = giftCertificate.getTag().getName();
         //Get Tag from DB
@@ -89,22 +67,8 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
                 return jdbcTemplate.update(CREATE_GIFT_WITH_TAG, giftCertificateId, tagId) != 0;
             }
         }
-
-
-        //Create Statement for Tag
-        PreparedStatementCreatorFactory pscfTag = new PreparedStatementCreatorFactory(
-                CREATE_TAG,
-                Types.VARCHAR);
-        //Call to get generated key of the new Tag
-        pscfTag.setReturnGeneratedKeys(true);
-
-        PreparedStatementCreator pscTag = pscfTag.newPreparedStatementCreator(Collections.singletonList(giftCertificate.getTag().getName()));
-
-        GeneratedKeyHolder tagKeyHolder = new GeneratedKeyHolder();
-        //Create new Tag in the DB
-        jdbcTemplate.update(pscTag, tagKeyHolder);
-        //Get ID of newly created GiftCertificate
-        int tagId = Objects.requireNonNull(tagKeyHolder.getKey()).intValue();
+        //Get ID of newly created Tag
+        int tagId = createTag(giftCertificate);
         //Insert ID of new entities in the DB
         return jdbcTemplate.update(CREATE_GIFT_WITH_TAG, giftCertificateId, tagId) != 0;
     }
@@ -131,5 +95,47 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public boolean updateGiftTag(int id) {
         return jdbcTemplate.update(UPDATE_GIFT_CERTIFICATE_TAG, id) != 0;
+    }
+
+    private int createTag(GiftCertificate giftCertificate) {
+        //Create Statement for Tag
+        PreparedStatementCreatorFactory pscfTag = new PreparedStatementCreatorFactory(
+                CREATE_TAG,
+                Types.VARCHAR);
+        //Call to get generated key of the new Tag
+        pscfTag.setReturnGeneratedKeys(true);
+
+        PreparedStatementCreator pscTag = pscfTag.newPreparedStatementCreator(Collections.singletonList(giftCertificate.getTag().getName()));
+
+        GeneratedKeyHolder tagKeyHolder = new GeneratedKeyHolder();
+        //Create new Tag in the DB
+        jdbcTemplate.update(pscTag, tagKeyHolder);
+        //Get ID of newly created GiftCertificate
+        return Objects.requireNonNull(tagKeyHolder.getKey()).intValue();
+    }
+
+    private int createGiftCertificate(GiftCertificate giftCertificate) {
+        //Create Statement for GiftCertificate
+        PreparedStatementCreatorFactory pscfGift = new PreparedStatementCreatorFactory(
+                CREATE_GIFT_CERTIFICATE,
+                Types.VARCHAR, Types.VARCHAR, Types.DECIMAL, Types.INTEGER, Types.TIMESTAMP, Types.TIMESTAMP
+        );
+        //Call to get generated key of the new GiftCertificate
+        pscfGift.setReturnGeneratedKeys(true);
+
+        PreparedStatementCreator pscGift = pscfGift.newPreparedStatementCreator(
+                Arrays.asList(
+                        giftCertificate.getName(),
+                        giftCertificate.getDescription(),
+                        giftCertificate.getPrice(),
+                        giftCertificate.getDuration(),
+                        giftCertificate.getCreateDate(),
+                        giftCertificate.getLastUpdateDate()));
+
+        GeneratedKeyHolder giftKeyHolder = new GeneratedKeyHolder();
+        //Create new Gift in DB
+        jdbcTemplate.update(pscGift, giftKeyHolder);
+        //Get ID of newly created GiftCertificate
+        return Objects.requireNonNull(giftKeyHolder.getKey()).intValue();
     }
 }

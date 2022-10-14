@@ -18,18 +18,16 @@ public class GiftCertificateMapper implements RowMapper<GiftCertificate> {
 
     @Override
     public GiftCertificate mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-        GiftCertificate giftCertificate = new GiftCertificate();
-        giftCertificate.setId(resultSet.getLong(GIFT_ID));
-        giftCertificate.setName(resultSet.getString(GIFT_NAME));
-        giftCertificate.setDescription(resultSet.getString(GIFT_DESCRIPTION));
-        giftCertificate.setPrice(resultSet.getDouble(GIFT_PRICE));
-        giftCertificate.setDuration(resultSet.getInt(GIFT_DURATION));
-        giftCertificate.setCreateDate(resultSet.getTimestamp(GIFT_CREATE_DATE).toLocalDateTime());
-        giftCertificate.setLastUpdateDate(resultSet.getTimestamp(GIFT_LAST_UPDATE_DATE).toLocalDateTime());
-
         Tag tag = tagMapper.mapRow(resultSet, rowNum);
-        giftCertificate.setTag(tag);
-
-        return giftCertificate;
+        return GiftCertificate.builder()
+                .id(resultSet.getLong(GIFT_ID))
+                .name(resultSet.getString(GIFT_NAME))
+                .description(resultSet.getString(GIFT_DESCRIPTION))
+                .price(resultSet.getDouble(GIFT_PRICE))
+                .duration(resultSet.getInt(GIFT_DURATION))
+                .createDate(resultSet.getTimestamp(GIFT_CREATE_DATE).toLocalDateTime())
+                .lastUpdateDate(resultSet.getTimestamp(GIFT_LAST_UPDATE_DATE).toLocalDateTime())
+                .tag(tag)
+                .build();
     }
 }

@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static com.epam.esm.util.EndpointName.*;
@@ -29,8 +28,6 @@ public class TagController {
         Tag tag = new Tag();
         if (optTag.isPresent()) {
             tag = optTag.get();
-        } else {
-            throw new NoSuchElementException();
         }
         return tag;
     }

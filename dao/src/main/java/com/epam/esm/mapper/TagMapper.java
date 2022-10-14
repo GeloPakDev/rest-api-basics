@@ -11,9 +11,9 @@ import static com.epam.esm.mapper.ColumnName.*;
 public class TagMapper implements RowMapper<Tag> {
     @Override
     public Tag mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-        Tag tag = new Tag();
-        tag.setId(resultSet.getLong(TAG_ID));
-        tag.setName(resultSet.getString(TAG_NAME));
-        return tag;
+        return Tag.builder().
+                id(resultSet.getLong(TAG_ID))
+                .name(resultSet.getString(TAG_NAME))
+                .build();
     }
 }

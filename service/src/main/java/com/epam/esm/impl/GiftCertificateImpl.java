@@ -1,7 +1,7 @@
 package com.epam.esm.impl;
 
 import com.epam.esm.*;
-import org.apache.commons.lang3.StringUtils;
+import com.epam.esm.validator.GiftValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +17,7 @@ import static com.epam.esm.QueryParam.*;
 
 @Service
 public class GiftCertificateImpl implements GiftCertificateService {
-    private GiftCertificateDao giftCertificateDao;
+    private final GiftCertificateDao giftCertificateDao;
 
     @Autowired
     public GiftCertificateImpl(GiftCertificateDao giftCertificateDao) {
@@ -33,6 +33,7 @@ public class GiftCertificateImpl implements GiftCertificateService {
     public List<GiftCertificate> findAll() {
         return giftCertificateDao.findAll();
     }
+
     @Override
     @Transactional
     public boolean create(GiftCertificate giftCertificate) {
@@ -47,29 +48,18 @@ public class GiftCertificateImpl implements GiftCertificateService {
 
     @Override
     public boolean update(int id, GiftCertificate giftCertificate) {
-
+        //Get gift to update by ID
         Optional<GiftCertificate> certificate = giftCertificateDao.findById(id);
-
-        GiftCertificate gift = certificate.get();
-
-        if (giftCertificate.getName() != null && !StringUtils.isNumeric(giftCertificate.getName())) {
-            gift.setName(giftCertificate.getName());
+        //Extract Gift from Wrapper
+        GiftCertificate gift = new GiftCertificate();
+        if (certificate.isPresent()) {
+            gift = certificate.get();
         }
-
-        if (giftCertificate.getDescription() != null && !StringUtils.isNumeric(giftCertificate.getDescription())) {
-            gift.setDescription(giftCertificate.getDescription());
-        }
-
-        if (giftCertificate.getPrice() != null) {
-            gift.setPrice(giftCertificate.getPrice());
-        }
-
-        if (giftCertificate.getDuration() != 0) {
-            gift.setDuration(giftCertificate.getDuration());
-        }
-
-        gift.setLastUpdateDate(LocalDateTime.now());
-        return giftCertificateDao.update(gift);
+        //Get Validated Gift
+        GiftCertificate validatedGift = GiftValidator.validateForUpdate(gift);
+        validatedGift.setLastUpdateDate(LocalDateTime.now());
+        //Update GiftCertificate
+        return giftCertificateDao.update(validatedGift);
     }
 
     @Override

@@ -6,7 +6,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static com.epam.esm.util.EndpointName.*;
@@ -17,7 +16,7 @@ import static com.epam.esm.util.QueryParam.*;
 @CrossOrigin(origins = LOCALHOST)
 public class GiftCertificateController {
 
-    private GiftCertificateService giftCertificateService;
+    private final GiftCertificateService giftCertificateService;
 
     @Autowired
     public GiftCertificateController(GiftCertificateService giftCertificateService) {
@@ -31,8 +30,6 @@ public class GiftCertificateController {
         GiftCertificate giftCertificate = new GiftCertificate();
         if (giftCertificateOptional.isPresent()) {
             giftCertificate = giftCertificateOptional.get();
-        } else {
-            throw new NoSuchElementException();
         }
         return giftCertificate;
     }
@@ -56,7 +53,8 @@ public class GiftCertificateController {
 
     //UPDATE Mappings
     @PatchMapping(path = GIFT_CERTIFICATES + ID, consumes = JSON)
-    public boolean updateGiftCertificate(@PathVariable(GIFT_ID) int id, @RequestBody GiftCertificate giftCertificate) {
+    public boolean updateGiftCertificate(@PathVariable(GIFT_ID) int id,
+                                         @RequestBody GiftCertificate giftCertificate) {
         return giftCertificateService.update(id, giftCertificate);
     }
 

@@ -64,4 +64,29 @@ public class GiftCertificateServiceImplTest {
         List<GiftCertificate> afterDelete = giftCertificateDao.findAll();
         assertEquals(4, afterDelete.size());
     }
+
+    @Test
+    public void update() {
+        int targetGift = 3;
+        //Get certificate to update
+        Optional<GiftCertificate> certificate = giftCertificateDao.findById(targetGift);
+        GiftCertificate giftCertificate = new GiftCertificate();
+        if (certificate.isPresent()) {
+            giftCertificate = certificate.get();
+        }
+        //Update it with new values
+        giftCertificate.setName("Update name gift " + targetGift);
+        giftCertificate.setDescription("Update desc gift" + targetGift);
+        giftCertificateService.update(3 , giftCertificate);
+
+        //Get updated GiftCertificate
+        Optional<GiftCertificate> updatedCertificate = giftCertificateDao.findById(targetGift);
+        GiftCertificate updatedGiftCertificate = new GiftCertificate();
+        if (certificate.isPresent()) {
+            updatedGiftCertificate = certificate.get();
+        }
+
+        boolean check = updatedGiftCertificate.equals(giftCertificate);
+        assertTrue(check);
+    }
 }
