@@ -12,34 +12,33 @@ public class GiftValidator {
     private final int MAX_DURATION = 366;
     private final int MIN_DURATION = 1;
 
-    public GiftCertificate validateForUpdate(GiftCertificate giftCertificate) {
-        GiftCertificate gift = new GiftCertificate();
-
-        String name = giftCertificate.getName();
+    public GiftCertificate validateForUpdate(GiftCertificate initialGift, GiftCertificate giftForUpdate) {
+        String name = giftForUpdate.getName();
         if (name != null) {
             if (name.length() < MIN_LENGTH_NAME || name.length() > MAX_LENGTH_NAME || !StringUtils.isNumeric(name)) {
-                gift.setName(name);
+                initialGift.setName(name);
             }
         }
 
-        String description = giftCertificate.getDescription();
+        String description = giftForUpdate.getDescription();
         if (description != null) {
             if (description.length() > MAX_LENGTH_DESCRIPTION || !StringUtils.isNumeric(description)) {
-                gift.setDescription(description);
+                initialGift.setDescription(description);
             }
         }
 
-        Double price = giftCertificate.getPrice();
+        Double price = giftForUpdate.getPrice();
         if (price != null) {
             if (price > 0) {
-                gift.setPrice(giftCertificate.getPrice());
+                initialGift.setPrice(price);
             }
         }
 
-        int duration = giftCertificate.getDuration();
+        int duration = giftForUpdate.getDuration();
         if (duration < MIN_DURATION || duration > MAX_DURATION) {
-            gift.setDuration(duration);
+            initialGift.setDuration(duration);
         }
-        return gift;
+
+        return initialGift;
     }
 }

@@ -53,8 +53,7 @@ public class GiftCertificateController {
 
     //UPDATE Mappings
     @PatchMapping(path = GIFT_CERTIFICATES + ID, consumes = JSON)
-    public boolean updateGiftCertificate(@PathVariable(GIFT_ID) int id,
-                                         @RequestBody GiftCertificate giftCertificate) {
+    public boolean updateGiftCertificate(@PathVariable(GIFT_ID) int id, @RequestBody GiftCertificate giftCertificate) {
         return giftCertificateService.update(id, giftCertificate);
     }
 

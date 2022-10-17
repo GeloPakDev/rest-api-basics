@@ -15,7 +15,7 @@ import static com.epam.esm.QuerySQL.*;
 
 @Repository
 public class TagDaoImpl implements TagDao {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public TagDaoImpl(DataSource dataSource) {
@@ -25,9 +25,9 @@ public class TagDaoImpl implements TagDao {
     @Override
     public Optional<Tag> findById(Integer id) {
         List<Tag> list = jdbcTemplate.query(SELECT_TAG_BY_ID, new TagMapper(), id);
-        return list.size() == 0 ?
-                Optional.empty() :
-                Optional.of(list.get(0));
+        return !list.isEmpty() ?
+                Optional.of(list.get(0)) :
+                Optional.empty();
     }
 
     @Override
@@ -48,8 +48,8 @@ public class TagDaoImpl implements TagDao {
     @Override
     public Optional<Tag> findByName(String name) {
         List<Tag> list = jdbcTemplate.query(SELECT_TAG_BY_NAME, new TagMapper(), name);
-        return list.size() == 0 ?
-                Optional.empty() :
-                Optional.of(list.get(0));
+        return !list.isEmpty() ?
+                Optional.of(list.get(0)) :
+                Optional.empty();
     }
 }

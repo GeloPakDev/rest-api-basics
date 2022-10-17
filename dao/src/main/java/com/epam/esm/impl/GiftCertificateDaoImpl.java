@@ -23,8 +23,8 @@ import static com.epam.esm.QuerySQL.*;
 @Repository
 public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
-    private JdbcTemplate jdbcTemplate;
-    private TagDao tagDao;
+    private final JdbcTemplate jdbcTemplate;
+    private final TagDao tagDao;
 
     @Autowired
     public GiftCertificateDaoImpl(DataSource dataSource) {
@@ -36,7 +36,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     @Override
     public Optional<GiftCertificate> findById(Integer id) {
         List<GiftCertificate> results = jdbcTemplate.query(SELECT_GIFT_CERTIFICATE_BY_ID, new GiftCertificateMapper(), id);
-        return Optional.of(results.get(0));
+        return !results.isEmpty() ?
+                Optional.of(results.get(0)) :
+                Optional.empty();
     }
 
     @Override

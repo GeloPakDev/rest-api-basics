@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import static com.epam.esm.mapper.ColumnName.*;
 
 public class GiftCertificateMapper implements RowMapper<GiftCertificate> {
-    private TagMapper tagMapper;
+    private final TagMapper tagMapper;
 
     public GiftCertificateMapper() {
         tagMapper = new TagMapper();

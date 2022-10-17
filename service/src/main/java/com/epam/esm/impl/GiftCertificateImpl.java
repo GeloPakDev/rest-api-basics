@@ -56,10 +56,10 @@ public class GiftCertificateImpl implements GiftCertificateService {
             gift = certificate.get();
         }
         //Get Validated Gift
-        GiftCertificate validatedGift = GiftValidator.validateForUpdate(gift);
+        GiftCertificate validatedGift = GiftValidator.validateForUpdate(gift , giftCertificate);
         validatedGift.setLastUpdateDate(LocalDateTime.now());
         //Update GiftCertificate
-        return giftCertificateDao.update(validatedGift);
+        return giftCertificateDao.update(gift);
     }
 
     @Override

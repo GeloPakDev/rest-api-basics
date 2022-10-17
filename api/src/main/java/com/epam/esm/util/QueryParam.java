@@ -11,4 +11,6 @@ public final class QueryParam {
     //Request Parameters
     public static final String GIFT_ID = "id";
     public static final String TAG_ID = "id";
+
+    public static final String TAG_NAME = "tagName";
 }

@@ -32,6 +32,16 @@ public class TagController {
         return tag;
     }
 
+    @RequestMapping(params = TAG_NAME)
+    public Tag findByTagName(@RequestParam String tagName) {
+        Optional<Tag> optTag = tagService.findByName(tagName);
+        Tag tag = new Tag();
+        if (optTag.isPresent()) {
+            tag = optTag.get();
+        }
+        return tag;
+    }
+
     @GetMapping
     public List<Tag> findAllTags() {
         return tagService.findAll();
@@ -48,4 +58,5 @@ public class TagController {
     public void deleteTag(@PathVariable(TAG_ID) int tagID) {
         tagService.delete(tagID);
     }
+
 }
