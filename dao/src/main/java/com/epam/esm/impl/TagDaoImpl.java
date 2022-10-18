@@ -36,13 +36,13 @@ public class TagDaoImpl implements TagDao {
     }
 
     @Override
-    public boolean create(Tag entity) {
-        return jdbcTemplate.update(CREATE_TAG, entity.getName()) != 0;
+    public void create(Tag entity) {
+        jdbcTemplate.update(CREATE_TAG, entity.getName());
     }
 
     @Override
-    public void delete(Integer id) {
-        jdbcTemplate.update(DELETE_TAG, id);
+    public boolean delete(Integer id) {
+        return jdbcTemplate.update(DELETE_TAG, id) != 0;
     }
 
     @Override

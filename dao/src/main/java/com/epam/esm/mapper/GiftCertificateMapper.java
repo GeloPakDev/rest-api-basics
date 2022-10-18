@@ -6,6 +6,8 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.epam.esm.mapper.ColumnName.*;
 
@@ -18,8 +20,7 @@ public class GiftCertificateMapper implements RowMapper<GiftCertificate> {
 
     @Override
     public GiftCertificate mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-        Tag tag = tagMapper.mapRow(resultSet, rowNum);
-        return GiftCertificate.builder()
+        GiftCertificate giftCertificate = GiftCertificate.builder()
                 .id(resultSet.getLong(GIFT_ID))
                 .name(resultSet.getString(GIFT_NAME))
                 .description(resultSet.getString(GIFT_DESCRIPTION))
@@ -27,7 +28,16 @@ public class GiftCertificateMapper implements RowMapper<GiftCertificate> {
                 .duration(resultSet.getInt(GIFT_DURATION))
                 .createDate(resultSet.getTimestamp(GIFT_CREATE_DATE).toLocalDateTime())
                 .lastUpdateDate(resultSet.getTimestamp(GIFT_LAST_UPDATE_DATE).toLocalDateTime())
-                .tag(tag)
                 .build();
+
+        List<Tag> tags = new ArrayList<>();
+        while (!resultSet.isAfterLast() && resultSet.getInt(GIFT_ID) == giftCertificate.getId()) {
+            Tag tag = tagMapper.mapRow(resultSet, rowNum);
+            tags.add(tag);
+            resultSet.next();
+        }
+
+        giftCertificate.setTags(tags);
+        return giftCertificate;
     }
 }

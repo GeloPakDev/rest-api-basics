@@ -1,5 +1,6 @@
 package com.epam.esm;
 
+import com.epam.esm.exception.IncorrectParameterException;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
@@ -11,11 +12,11 @@ public interface GiftCertificateService {
 
     List<GiftCertificate> findAll();
 
-    boolean create(GiftCertificate giftCertificate);
+    void create(GiftCertificate giftCertificate);
 
-    void delete(Integer id);
+    boolean delete(Integer id);
 
-    boolean update(int id, GiftCertificate giftCertificate);
+    boolean update(int id, GiftCertificate giftCertificate) throws IncorrectParameterException;
 
     boolean updateGiftTag(int id);
 

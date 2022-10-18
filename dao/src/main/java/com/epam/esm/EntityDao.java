@@ -8,7 +8,7 @@ public interface EntityDao<E, K> {
 
     List<E> findAll();
 
-    boolean create(E entity);
+    void  create(E entity);
 
-    void delete(K id);
+    boolean delete(K id);
 }

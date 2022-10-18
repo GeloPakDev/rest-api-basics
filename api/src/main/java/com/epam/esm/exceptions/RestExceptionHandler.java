@@ -1,5 +1,6 @@
 package com.epam.esm.exceptions;
 
+import com.epam.esm.exception.IncorrectParameterException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<Object> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException e) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR);
+        String message = e.getLocalizedMessage();
+        int statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
+        errorResponse.setStatusCode(statusCode);
+        errorResponse.setMessage(message);
+        return buildResponseEntity(errorResponse);
+    }
+
+    @ExceptionHandler(IncorrectParameterException.class)
+    public ResponseEntity<Object> handleIncorrectParameterException(IncorrectParameterException e) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR);
         String message = e.getLocalizedMessage();
         int statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();

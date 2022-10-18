@@ -30,13 +30,13 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public boolean create(Tag entity) {
-        return tagDao.create(entity);
+    public void create(Tag entity) {
+         tagDao.create(entity);
     }
 
     @Override
-    public void delete(Integer id) {
-        tagDao.delete(id);
+    public boolean delete(Integer id) {
+        return tagDao.delete(id);
     }
 
     @Override

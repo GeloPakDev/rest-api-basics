@@ -21,29 +21,50 @@ public class QueryCreator {
             JOIN tag t ON gt.tag_id = t.tag_id
             """;
 
-    public static final String TAG_NAME = "WHERE t.tag_name = ";
-    public static final String NAME_PART = "WHERE gc.name LIKE ";
-    public static final String DESCRIPTION_PART = "WHERE gc.description LIKE ";
-    public static final String ORDER_BY_NAME = "ORDER BY gc.name ";
-    public static final String ORDER_BY_DATE = "ORDER BY gc.create_date ";
-
-    public static String createGetQuery(Map<String, String> fields) {
+    public  String createGetQuery(Map<String, String> fields) {
         StringBuilder query = new StringBuilder(BASE_QUERY);
         if (fields.get("tagName") != null) {
-            query.append(TAG_NAME).append('"').append(fields.get("tagName")).append('"');
+            addParameter(query, "t.tag_name", fields.get("tagName"));
         }
         if (fields.get("partName") != null) {
-            query.append(NAME_PART).append("'%").append(fields.get("partName")).append("%'");
+            addPartParameter(query, "gc.name", fields.get("partName"));
         }
         if (fields.get("partDescription") != null) {
-            query.append(DESCRIPTION_PART).append("'%").append(fields.get("partDescription")).append("%'");
+            addPartParameter(query, "gc.description", fields.get("partDescription"));
         }
         if (fields.get("sortByName") != null) {
-            query.append(ORDER_BY_NAME).append(fields.get("sortByName"));
+            addSortParameter(query, "gc.name", fields.get("sortByName"));
         }
         if (fields.get("sortByDate") != null) {
-            query.append(ORDER_BY_DATE).append(fields.get("sortByDate"));
+            addSortParameter(query, "gc.create_date", fields.get("sortByDate"));
         }
         return query.toString();
+    }
+
+    private void addParameter(StringBuilder query, String partParameter, String value) {
+        if (query.toString().contains("WHERE")) {
+            query.append(" AND ");
+        } else {
+            query.append(" WHERE ");
+        }
+        query.append(partParameter).append("='").append(value).append('\'');
+    }
+
+    private void addPartParameter(StringBuilder query, String partParameter, String value) {
+        if (query.toString().contains("WHERE")) {
+            query.append(" AND ");
+        } else {
+            query.append(" WHERE ");
+        }
+        query.append(partParameter).append(" LIKE '%").append(value).append("%'");
+    }
+
+    private void addSortParameter(StringBuilder query, String sortParameter, String value) {
+        if (query.toString().contains("ORDER BY")) {
+            query.append(", ");
+        } else {
+            query.append(" ORDER BY ");
+        }
+        query.append(sortParameter).append(" ").append(value);
     }
 }

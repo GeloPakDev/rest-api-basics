@@ -12,9 +12,9 @@ public interface TagService {
 
     List<Tag> findAll();
 
-    boolean create(Tag entity);
+    void create(Tag entity);
 
-    void delete(Integer id);
+    boolean delete(Integer id);
 
     Optional<Tag> findByName(String name);
 }

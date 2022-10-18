@@ -48,38 +48,32 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
 
     @Override
     public List<GiftCertificate> getWithFilters(Map<String, String> fields) {
-        String query = QueryCreator.createGetQuery(fields);
+        QueryCreator queryCreator = new QueryCreator();
+        String query = queryCreator.createGetQuery(fields);
         return jdbcTemplate.query(query, new GiftCertificateMapper());
     }
 
     //CREATE operations
     @Override
-    public boolean create(GiftCertificate giftCertificate) {
+    public void create(GiftCertificate giftCertificate) {
         //Get ID of newly created GiftCertificate
         int giftCertificateId = createGiftCertificate(giftCertificate);
-        //Get TAG name to check on uniqueness
-        String name = giftCertificate.getTag().getName();
-        //Get Tag from DB
-        Optional<Tag> tag = tagDao.findByName(name);
-        //Check tags names on uniqueness
-        if (tag.isPresent()) {
-            //If they are identical we pass existing tag from DB
-            if (Objects.equals(tag.get().getName(), name)) {
-                Long tagId = tag.get().getId();
-                return jdbcTemplate.update(CREATE_GIFT_WITH_TAG, giftCertificateId, tagId) != 0;
-            }
-        }
-        //Get ID of newly created Tag
-        int tagId = createTag(giftCertificate);
-        //Insert ID of new entities in the DB
-        return jdbcTemplate.update(CREATE_GIFT_WITH_TAG, giftCertificateId, tagId) != 0;
+        //Get TAGS name to check on uniqueness
+        List<Tag> list = giftCertificate.getTags();
+        //Create tags which linked to the GiftCertificate
+        createTags(giftCertificateId, list);
     }
 
     //DELETE operations
     @Override
-    public void delete(Integer id) {
-        jdbcTemplate.update(DELETE_GIFT_CERTIFICATE_BY_ID, id);
-        jdbcTemplate.update(DELETE_GIFT_CERTIFICATE_TAG_BY_ID, id);
+    public boolean delete(Integer id) {
+        boolean check = false;
+        int giftCertificate = jdbcTemplate.update(DELETE_GIFT_CERTIFICATE_BY_ID, id);
+        int giftTag = jdbcTemplate.update(DELETE_GIFT_CERTIFICATE_TAG_BY_ID, id);
+        if ((giftCertificate & giftTag) == 1) {
+            check = true;
+        }
+        return check;
     }
 
     //UPDATE operations
@@ -99,15 +93,13 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         return jdbcTemplate.update(UPDATE_GIFT_CERTIFICATE_TAG, id) != 0;
     }
 
-    private int createTag(GiftCertificate giftCertificate) {
+    private int createTag(Tag tag) {
         //Create Statement for Tag
-        PreparedStatementCreatorFactory pscfTag = new PreparedStatementCreatorFactory(
-                CREATE_TAG,
-                Types.VARCHAR);
+        PreparedStatementCreatorFactory pscfTag = new PreparedStatementCreatorFactory(CREATE_TAG, Types.VARCHAR);
         //Call to get generated key of the new Tag
         pscfTag.setReturnGeneratedKeys(true);
 
-        PreparedStatementCreator pscTag = pscfTag.newPreparedStatementCreator(Collections.singletonList(giftCertificate.getTag().getName()));
+        PreparedStatementCreator pscTag = pscfTag.newPreparedStatementCreator(new Tag[]{tag});
 
         GeneratedKeyHolder tagKeyHolder = new GeneratedKeyHolder();
         //Create new Tag in the DB
@@ -139,5 +131,26 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
         jdbcTemplate.update(pscGift, giftKeyHolder);
         //Get ID of newly created GiftCertificate
         return Objects.requireNonNull(giftKeyHolder.getKey()).intValue();
+    }
+
+    private void createTags(int giftCertificateId, List<Tag> tags) {
+        //Pass through the List of gifts
+        for (Tag tag : tags) {
+            //Get name of each tag
+            String name = tag.getName();
+            //Find tag by name if it exists
+            Optional<Tag> optTag = tagDao.findByName(name);
+            if (optTag.isPresent()) {
+                //If tag exists we will pass it into table directly
+                if (Objects.equals(tag.getName(), name)) {
+                    Long tagId = tag.getId();
+                    jdbcTemplate.update(CREATE_GIFT_WITH_TAG, giftCertificateId, tagId);
+                } else {
+                    //If tag does not exist we will create it and then pass to the table
+                    int tagId = createTag(tag);
+                    jdbcTemplate.update(CREATE_GIFT_WITH_TAG, giftCertificateId, tagId);
+                }
+            }
+        }
     }
 }

@@ -1,8 +1,12 @@
 package com.epam.esm.validator;
 
 import com.epam.esm.GiftCertificate;
+import com.epam.esm.exception.IncorrectParameterException;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
+
+
+import static com.epam.esm.exception.ExceptionIncorrectParameterMessageCodes.*;
 
 @UtilityClass
 public class GiftValidator {
@@ -12,33 +16,47 @@ public class GiftValidator {
     private final int MAX_DURATION = 366;
     private final int MIN_DURATION = 1;
 
-    public GiftCertificate validateForUpdate(GiftCertificate initialGift, GiftCertificate giftForUpdate) {
+    public GiftCertificate validateForUpdate(GiftCertificate initialGift, GiftCertificate giftForUpdate) throws IncorrectParameterException {
         String name = giftForUpdate.getName();
-        if (name != null) {
-            if (name.length() < MIN_LENGTH_NAME || name.length() > MAX_LENGTH_NAME || !StringUtils.isNumeric(name)) {
-                initialGift.setName(name);
-            }
-        }
+        validateName(name);
+        initialGift.setName(name);
 
         String description = giftForUpdate.getDescription();
-        if (description != null) {
-            if (description.length() > MAX_LENGTH_DESCRIPTION || !StringUtils.isNumeric(description)) {
-                initialGift.setDescription(description);
-            }
-        }
+        validateDescription(description);
+        initialGift.setDescription(description);
 
         Double price = giftForUpdate.getPrice();
-        if (price != null) {
-            if (price > 0) {
-                initialGift.setPrice(price);
-            }
-        }
+        validatePrice(price);
+        initialGift.setPrice(price);
 
         int duration = giftForUpdate.getDuration();
-        if (duration < MIN_DURATION || duration > MAX_DURATION) {
-            initialGift.setDuration(duration);
-        }
+        validateDuration(duration);
+        initialGift.setDuration(duration);
 
         return initialGift;
+    }
+
+    private void validateName(String name) throws IncorrectParameterException {
+        if (name == null || name.length() < MIN_LENGTH_NAME || name.length() > MAX_LENGTH_NAME || StringUtils.isNumeric(name)) {
+            throw new IncorrectParameterException(BAD_GIFT_CERTIFICATE_NAME);
+        }
+    }
+
+    private void validateDescription(String description) throws IncorrectParameterException {
+        if (description == null || description.length() > MAX_LENGTH_DESCRIPTION || StringUtils.isNumeric(description)) {
+            throw new IncorrectParameterException(BAD_GIFT_CERTIFICATE_DESCRIPTION);
+        }
+    }
+
+    private void validatePrice(Double price) throws IncorrectParameterException {
+        if (price == null || price < 0) {
+            throw new IncorrectParameterException(BAD_GIFT_CERTIFICATE_PRICE);
+        }
+    }
+
+    private void validateDuration(int duration) throws IncorrectParameterException {
+        if (duration < MIN_DURATION || duration > MAX_DURATION) {
+            throw new IncorrectParameterException(BAD_GIFT_CERTIFICATE_DURATION);
+        }
     }
 }

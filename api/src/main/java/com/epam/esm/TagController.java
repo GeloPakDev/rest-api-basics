@@ -1,7 +1,10 @@
 package com.epam.esm;
 
+import com.epam.esm.response.ResponseHandler;
+import com.epam.esm.response.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,23 +26,27 @@ public class TagController {
     }
 
     @RequestMapping(params = TAG_ID)
-    public Tag findTagById(@RequestParam int id) {
+    public ResponseEntity<Object> findTagById(@RequestParam int id) {
         Optional<Tag> optTag = tagService.findById(id);
-        Tag tag = new Tag();
+        Tag tag;
         if (optTag.isPresent()) {
             tag = optTag.get();
+            return ResponseHandler.generateResponse(ResponseMessage.SUCCESSFULLY_RECEIVED, HttpStatus.OK, tag);
+        } else {
+            return ResponseHandler.generateResponse("Tag with id (" + id + ") was not found", HttpStatus.NOT_FOUND, "[]");
         }
-        return tag;
     }
 
     @RequestMapping(params = TAG_NAME)
-    public Tag findByTagName(@RequestParam String tagName) {
+    public ResponseEntity<Object> findByTagName(@RequestParam String tagName) {
         Optional<Tag> optTag = tagService.findByName(tagName);
-        Tag tag = new Tag();
+        Tag tag;
         if (optTag.isPresent()) {
             tag = optTag.get();
+            return ResponseHandler.generateResponse(ResponseMessage.SUCCESSFULLY_RECEIVED, HttpStatus.OK, tag);
+        } else {
+            return ResponseHandler.generateResponse("Tag with name (" + tagName + ") was not found", HttpStatus.NOT_FOUND, "[]");
         }
-        return tag;
     }
 
     @GetMapping
@@ -49,14 +56,19 @@ public class TagController {
 
     @PostMapping(consumes = JSON)
     @ResponseStatus(HttpStatus.CREATED)
-    public boolean createTag(@RequestBody Tag tag) {
-        return tagService.create(tag);
+    public ResponseEntity<Object> createTag(@RequestBody Tag tag) {
+        tagService.create(tag);
+        return ResponseHandler.generateResponse(ResponseMessage.SUCCESSFULLY_CREATED , HttpStatus.OK);
     }
 
     @DeleteMapping(ID)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTag(@PathVariable(TAG_ID) int tagID) {
-        tagService.delete(tagID);
+    public ResponseEntity<Object> deleteTag(@PathVariable(TAG_ID) int tagID) {
+        boolean check = tagService.delete(tagID);
+        if (check) {
+            return ResponseHandler.generateResponse(ResponseMessage.SUCCESSFULLY_DELETED + tagID, HttpStatus.OK);
+        } else {
+            return ResponseHandler.generateResponse(ResponseMessage.DELETE_ERROR + tagID, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
 }

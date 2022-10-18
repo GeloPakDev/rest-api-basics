@@ -1,6 +1,7 @@
 package com.epam.esm.impl;
 
 import com.epam.esm.*;
+import com.epam.esm.exception.IncorrectParameterException;
 import com.epam.esm.validator.GiftValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,18 +37,18 @@ public class GiftCertificateImpl implements GiftCertificateService {
 
     @Override
     @Transactional
-    public boolean create(GiftCertificate giftCertificate) {
-        return giftCertificateDao.create(giftCertificate);
+    public void create(GiftCertificate giftCertificate) {
+        giftCertificateDao.create(giftCertificate);
     }
 
     @Override
     @Transactional
-    public void delete(Integer id) {
-        giftCertificateDao.delete(id);
+    public boolean delete(Integer id) {
+        return giftCertificateDao.delete(id);
     }
 
     @Override
-    public boolean update(int id, GiftCertificate giftCertificate) {
+    public boolean update(int id, GiftCertificate giftCertificate) throws IncorrectParameterException {
         //Get gift to update by ID
         Optional<GiftCertificate> certificate = giftCertificateDao.findById(id);
         //Extract Gift from Wrapper
@@ -56,7 +57,7 @@ public class GiftCertificateImpl implements GiftCertificateService {
             gift = certificate.get();
         }
         //Get Validated Gift
-        GiftCertificate validatedGift = GiftValidator.validateForUpdate(gift , giftCertificate);
+        GiftCertificate validatedGift = GiftValidator.validateForUpdate(gift, giftCertificate);
         validatedGift.setLastUpdateDate(LocalDateTime.now());
         //Update GiftCertificate
         return giftCertificateDao.update(gift);
