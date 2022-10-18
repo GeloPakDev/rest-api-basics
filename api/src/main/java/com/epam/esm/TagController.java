@@ -66,7 +66,7 @@ public class TagController {
     public ResponseEntity<Object> deleteTag(@PathVariable(TAG_ID) int tagID) {
         boolean check = tagService.delete(tagID);
         if (check) {
-            return ResponseHandler.generateResponse(ResponseMessage.SUCCESSFULLY_DELETED + tagID, HttpStatus.OK);
+            return ResponseHandler.generateResponse(ResponseMessage.SUCCESSFULLY_DELETED_TAG + tagID, HttpStatus.OK);
         } else {
             return ResponseHandler.generateResponse(ResponseMessage.DELETE_ERROR + tagID, HttpStatus.INTERNAL_SERVER_ERROR);
         }
