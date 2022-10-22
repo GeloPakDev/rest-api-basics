@@ -67,13 +67,9 @@ public class GiftCertificateDaoImpl implements GiftCertificateDao {
     //DELETE operations
     @Override
     public boolean delete(Integer id) {
-        boolean check = false;
         int giftCertificate = jdbcTemplate.update(DELETE_GIFT_CERTIFICATE_BY_ID, id);
         int giftTag = jdbcTemplate.update(DELETE_GIFT_CERTIFICATE_TAG_BY_ID, id);
-        if ((giftCertificate & giftTag) == 1) {
-            check = true;
-        }
-        return check;
+        return (giftCertificate & giftTag) == 1;
     }
 
     //UPDATE operations

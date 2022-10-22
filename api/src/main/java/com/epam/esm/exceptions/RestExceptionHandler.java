@@ -20,41 +20,49 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<Object> handleNoSuchElementException(HttpServletRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND);
         String message = "Requested resource not found (id=" + request.getParameter("id") + ")";
         int statusCode = HttpStatus.NOT_FOUND.value();
-        errorResponse.setStatusCode(statusCode);
-        errorResponse.setMessage(message);
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.NOT_FOUND)
+                .statusCode(statusCode)
+                .message(message)
+                .build();
         return buildResponseEntity(errorResponse);
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<Object> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException e) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR);
         String message = e.getLocalizedMessage();
         int statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-        errorResponse.setStatusCode(statusCode);
-        errorResponse.setMessage(message);
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .statusCode(statusCode)
+                .message(message)
+                .build();
         return buildResponseEntity(errorResponse);
     }
 
     @ExceptionHandler(IncorrectParameterException.class)
     public ResponseEntity<Object> handleIncorrectParameterException(IncorrectParameterException e) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR);
         String message = e.getLocalizedMessage();
         int statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-        errorResponse.setStatusCode(statusCode);
-        errorResponse.setMessage(message);
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .statusCode(statusCode)
+                .message(message)
+                .build();
         return buildResponseEntity(errorResponse);
     }
 
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<Object> handleNullPointerException(NullPointerException e) {
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR);
         String message = e.getLocalizedMessage();
         int statusCode = HttpStatus.INTERNAL_SERVER_ERROR.value();
-        errorResponse.setStatusCode(statusCode);
-        errorResponse.setMessage(message);
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .statusCode(statusCode)
+                .message(message)
+                .build();
         return buildResponseEntity(errorResponse);
     }
 

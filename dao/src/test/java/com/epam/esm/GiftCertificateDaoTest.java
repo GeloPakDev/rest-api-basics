@@ -11,10 +11,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,23 +41,22 @@ public class GiftCertificateDaoTest {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime createDate = LocalDateTime.parse("2022-10-10 11:15:10", formatter);
         LocalDateTime lastUpdateDate = LocalDateTime.parse("2022-10-05 11:15:10", formatter);
-        Long id = 2L;
-        Tag tag = new Tag(id, "red");
-        GiftCertificate giftCertificateToCompare = new GiftCertificate(id, "bgiftCertificate2", "description2", 2.22, 2, createDate, lastUpdateDate, tag);
+        Long id = 5L;
+        Tag tag = new Tag(id, "tagName5");
+        List<Tag> tags = new ArrayList<>();
+        tags.add(tag);
+        GiftCertificate giftCertificateToCompare = new GiftCertificate(2L, "bgiftCertificate2", "description2", 2.22, 2, createDate, lastUpdateDate, tags);
         GiftCertificate giftCertificate = new GiftCertificate();
 
         if (giftCertificateOpt.isPresent()) {
             giftCertificate = giftCertificateOpt.get();
         }
-        System.out.println(giftCertificate);
-        System.out.println(giftCertificateToCompare);
 
         boolean check = giftCertificate.equals(giftCertificateToCompare);
         assertTrue(check);
     }
 
     @Test
-
     public void getAllGiftCertificates() {
         List<GiftCertificate> giftCertificates = giftCertificateDao.findAll();
         assertEquals(5, giftCertificates.size());
@@ -84,18 +80,18 @@ public class GiftCertificateDaoTest {
         //Get updated GiftCertificate
         Optional<GiftCertificate> updatedCertificate = giftCertificateDao.findById(targetGift);
         GiftCertificate updatedGiftCertificate = new GiftCertificate();
-        if (certificate.isPresent()) {
-            updatedGiftCertificate = certificate.get();
+        if (updatedCertificate.isPresent()) {
+            updatedGiftCertificate = updatedCertificate.get();
         }
 
-        boolean check = updatedGiftCertificate.equals(giftCertificate);
-        assertTrue(check);
+        String name = giftCertificate.getName();
+        String updatedName = updatedGiftCertificate.getName();
+        assertEquals(name, updatedName);
     }
 
     @Test
     public void deleteCertificate() {
-        List<GiftCertificate> giftCertificates = giftCertificateDao.findAll();
-        giftCertificateDao.delete(3);
+        giftCertificateDao.delete(2);
         List<GiftCertificate> afterDelete = giftCertificateDao.findAll();
         assertEquals(4, afterDelete.size());
     }
@@ -103,15 +99,19 @@ public class GiftCertificateDaoTest {
     @Test
     public void createGiftCertificate() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime createDate = LocalDateTime.parse("2022-10-05 11:15:10", formatter);
+        LocalDateTime createDate = LocalDateTime.parse("2022-10-17 11:15:10", formatter);
         LocalDateTime lastUpdateDate = LocalDateTime.parse("2022-10-05 11:15:10", formatter);
-        Long id = 6L;
-        Tag tag = new Tag(id, "tagName6");
-        GiftCertificate giftCertificateToCreate = new GiftCertificate(id, "giftCertificate6", "description6", 6.66, 6, createDate, lastUpdateDate, tag);
+        Long id = 1L;
+        Tag tag = new Tag(id, "tagName1");
+        List<Tag> tags = new ArrayList<>();
+        tags.add(tag);
+        GiftCertificate giftCertificateToCreate = new GiftCertificate(5L, "egiftCertificate5", "description5", 5.55, 2, createDate, lastUpdateDate, tags);
         giftCertificateDao.create(giftCertificateToCreate);
-        Optional<GiftCertificate> giftCertificateToFindOpt = giftCertificateDao.findById(6);
-        GiftCertificate giftCertificateToFind = giftCertificateToFindOpt.get();
-
+        Optional<GiftCertificate> giftCertificateToFindOpt = giftCertificateDao.findById(5);
+        GiftCertificate giftCertificateToFind = new GiftCertificate();
+        if (giftCertificateToFindOpt.isPresent()) {
+            giftCertificateToFind = giftCertificateToFindOpt.get();
+        }
         boolean check = giftCertificateToCreate.equals(giftCertificateToFind);
         assertTrue(check);
     }

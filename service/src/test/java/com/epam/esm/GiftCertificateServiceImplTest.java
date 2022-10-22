@@ -1,5 +1,6 @@
 package com.epam.esm;
 
+import com.epam.esm.exception.IncorrectParameterException;
 import com.epam.esm.impl.GiftCertificateDaoImpl;
 import com.epam.esm.impl.GiftCertificateImpl;
 import org.junit.jupiter.api.AfterEach;
@@ -14,6 +15,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,31 +47,37 @@ public class GiftCertificateServiceImplTest {
     @Test
     public void create() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime createDate = LocalDateTime.parse("2022-10-05 11:15:10", formatter);
+        LocalDateTime createDate = LocalDateTime.parse("2022-10-17 11:15:10", formatter);
         LocalDateTime lastUpdateDate = LocalDateTime.parse("2022-10-05 11:15:10", formatter);
-        Long id = 6L;
-        Tag tag = new Tag(id, "tagName6");
-        GiftCertificate giftCertificateToCreate = new GiftCertificate(id, "giftCertificate6", "description6", 6.66, 6, createDate, lastUpdateDate, tag);
-        giftCertificateDao.create(giftCertificateToCreate);
-        Optional<GiftCertificate> giftCertificateToFindOpt = giftCertificateDao.findById(6);
-        GiftCertificate giftCertificateToFind = giftCertificateToFindOpt.get();
-
+        Long id = 1L;
+        Tag tag = new Tag(id, "tagName1");
+        List<Tag> tags = new ArrayList<>();
+        tags.add(tag);
+        GiftCertificate giftCertificateToCreate = new GiftCertificate(5L, "egiftCertificate5", "description5", 5.55, 2, createDate, lastUpdateDate, tags);
+        giftCertificateService.create(giftCertificateToCreate);
+        Optional<GiftCertificate> giftCertificateToFindOpt = giftCertificateService.findById(5);
+        GiftCertificate giftCertificateToFind = new GiftCertificate();
+        if (giftCertificateToFindOpt.isPresent()) {
+            giftCertificateToFind = giftCertificateToFindOpt.get();
+        }
+        System.out.println(giftCertificateToCreate);
+        System.out.println(giftCertificateToFind);
         boolean check = giftCertificateToCreate.equals(giftCertificateToFind);
         assertTrue(check);
     }
 
     @Test
     public void delete() {
-        giftCertificateDao.delete(3);
+        giftCertificateService.delete(3);
         List<GiftCertificate> afterDelete = giftCertificateDao.findAll();
         assertEquals(4, afterDelete.size());
     }
 
     @Test
-    public void update() {
+    public void update() throws IncorrectParameterException {
         int targetGift = 3;
         //Get certificate to update
-        Optional<GiftCertificate> certificate = giftCertificateDao.findById(targetGift);
+        Optional<GiftCertificate> certificate = giftCertificateService.findById(targetGift);
         GiftCertificate giftCertificate = new GiftCertificate();
         if (certificate.isPresent()) {
             giftCertificate = certificate.get();
@@ -77,16 +85,17 @@ public class GiftCertificateServiceImplTest {
         //Update it with new values
         giftCertificate.setName("Update name gift " + targetGift);
         giftCertificate.setDescription("Update desc gift" + targetGift);
-        giftCertificateService.update(3 , giftCertificate);
+        giftCertificateService.update(3, giftCertificate);
 
         //Get updated GiftCertificate
         Optional<GiftCertificate> updatedCertificate = giftCertificateDao.findById(targetGift);
         GiftCertificate updatedGiftCertificate = new GiftCertificate();
-        if (certificate.isPresent()) {
-            updatedGiftCertificate = certificate.get();
+        if (updatedCertificate.isPresent()) {
+            updatedGiftCertificate = updatedCertificate.get();
         }
 
-        boolean check = updatedGiftCertificate.equals(giftCertificate);
-        assertTrue(check);
+        String name = giftCertificate.getName();
+        String updatedName = updatedGiftCertificate.getName();
+        assertEquals(name, updatedName);
     }
 }

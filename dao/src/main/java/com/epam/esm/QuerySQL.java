@@ -22,19 +22,18 @@ public final class QuerySQL {
 
     public static final String SELECT_ALL_GIFT_CERTIFICATES = """
             SELECT gc.id,
-                    gc.name,
-                    gc.description,
-                    gc.price,
-                    gc.duration,
-                    gc.create_date,
-                    gc.last_update_date,
-                    t.tag_id,
-                    t.tag_name
+                   gc.name,
+                   gc.description,
+                   gc.price,
+                   gc.duration,
+                   gc.create_date,
+                   gc.last_update_date,
+                   t.tag_id,
+                   t.tag_name
             FROM gift_tags gt
             JOIN gift_certificate gc ON gt.gift_id = gc.id
             JOIN tag t ON gt.tag_id = t.tag_id
             """;
-
     public static final String DELETE_GIFT_CERTIFICATE_BY_ID = """
             DELETE
             FROM gift_certificate

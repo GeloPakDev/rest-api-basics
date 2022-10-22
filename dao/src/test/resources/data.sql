@@ -1,8 +1,9 @@
+
 INSERT INTO tag (tag_name)
 VALUES ('tagName1');
 
 INSERT INTO tag (tag_name)
-VALUES ('red');
+VALUES ('tagName2');
 
 INSERT INTO tag (tag_name)
 VALUES ('tagName3');
@@ -32,10 +33,10 @@ VALUES ('egiftCertificate5', 'description5', 5.55, 2, '2022-10-17 11:15:10', '20
 
 
 INSERT INTO gift_tags (gift_id, tag_id)
-VALUES (1, 2);
+VALUES (1, 4);
 
 INSERT INTO gift_tags (gift_id, tag_id)
-VALUES (2, 2);
+VALUES (2, 5);
 
 INSERT INTO gift_tags (gift_id, tag_id)
 VALUES (3, 4);
